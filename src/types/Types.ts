@@ -1,6 +1,8 @@
 // ─── Shared Types ─────────────────────────────────────────────────────────────
 
 export type Role = "admin" | "agent" | "customer";
+export type TicketStatus = "Open" | "In Progress" | "Resolved";
+export type TicketPriority = "Low" | "Medium" | "High";
 
 export interface User {
   id: string;
