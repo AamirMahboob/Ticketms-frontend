@@ -1,243 +1,158 @@
 import {
-  CheckCircle,
-  Clock,
-  AlertCircle,
   Ticket,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  ArrowRight,
 } from "lucide-react";
 
-import type {
-  TicketStatus,
-  TicketPriority,
-} from "../../types/Types";
+type TicketStatus = "Open" | "In Progress" | "Resolved";
+type TicketPriority = "High" | "Medium" | "Low";
 
-/* -----------------------------
-   TYPES (already defined, just used here)
-------------------------------*/
-
-type TicketItem = {
+interface TicketItem {
   id: string;
   title: string;
   status: TicketStatus;
   priority: TicketPriority;
-};
+}
 
-/* -----------------------------
-   DATA
-------------------------------*/
-
-const stats = [
-  {
-    title: "Assigned Tickets",
-    value: 24,
-    icon: Ticket,
-    color: "text-blue-600 bg-blue-50",
-  },
-  {
-    title: "In Progress",
-    value: 8,
-    icon: Clock,
-    color: "text-yellow-600 bg-yellow-50",
-  },
-  {
-    title: "Resolved",
-    value: 14,
-    icon: CheckCircle,
-    color: "text-green-600 bg-green-50",
-  },
-  {
-    title: "Urgent",
-    value: 2,
-    icon: AlertCircle,
-    color: "text-red-600 bg-red-50",
-  },
+const STATS = [
+  { label: "Assigned",    value: 24, icon: Ticket,       accent: "#6366F1", light: "#EEF2FF", trend: "+2 today" },
+  { label: "In Progress", value: 8,  icon: Clock,        accent: "#F59E0B", light: "#FFFBEB", trend: "3 due soon" },
+  { label: "Resolved",    value: 14, icon: CheckCircle,  accent: "#10B981", light: "#ECFDF5", trend: "+5 this week" },
+  { label: "Urgent",      value: 2,  icon: AlertCircle,  accent: "#EF4444", light: "#FEF2F2", trend: "Needs action" },
 ];
 
-const tickets: TicketItem[] = [
-  {
-    id: "#TK-001",
-    title: "Login issue",
-    status: "Open",
-    priority: "High",
-  },
-  {
-    id: "#TK-002",
-    title: "Dashboard Bug",
-    status: "In Progress",
-    priority: "Medium",
-  },
-  {
-    id: "#TK-003",
-    title: "Unable to Upload File",
-    status: "Resolved",
-    priority: "Low",
-  },
+const TICKETS: TicketItem[] = [
+  { id: "#TK-001", title: "Login issue",           status: "Open",        priority: "High" },
+  { id: "#TK-002", title: "Dashboard bug",         status: "In Progress", priority: "Medium" },
+  { id: "#TK-003", title: "Unable to upload file", status: "Resolved",    priority: "Low" },
 ];
 
-/* -----------------------------
-   SAFE MAPPINGS (IMPORTANT FIX)
-------------------------------*/
+const ACTIVITY = [
+  { color: "#10B981", title: "Ticket resolved",      sub: "Login issue fixed",                time: "2m ago" },
+  { color: "#F59E0B", title: "Status updated",       sub: "Dashboard bug → In Progress",      time: "18m ago" },
+  { color: "#6366F1", title: "New ticket assigned",  sub: "File upload error",                time: "1h ago" },
+];
 
-const statusColor: Record<TicketStatus, string> = {
-  Open: "bg-blue-50 text-blue-600",
-  "In Progress": "bg-yellow-50 text-yellow-600",
-  Resolved: "bg-green-50 text-green-600",
+const STATUS_STYLE: Record<TicketStatus, { bg: string; text: string }> = {
+  Open:          { bg: "#EEF2FF", text: "#4338CA" },
+  "In Progress": { bg: "#FFFBEB", text: "#B45309" },
+  Resolved:      { bg: "#ECFDF5", text: "#065F46" },
 };
 
-const priorityColor: Record<TicketPriority, string> = {
-  High: "bg-red-50 text-red-600",
-  Medium: "bg-orange-50 text-orange-600",
-  Low: "bg-slate-100 text-slate-600",
+const PRIORITY_BAR: Record<TicketPriority, { bar: string; bg: string; text: string }> = {
+  High:   { bar: "#EF4444", bg: "#FEF2F2", text: "#B91C1C" },
+  Medium: { bar: "#F59E0B", bg: "#FFFBEB", text: "#B45309" },
+  Low:    { bar: "#CBD5E1", bg: "#F8FAFC", text: "#64748B" },
 };
-
-/* -----------------------------
-   COMPONENT
-------------------------------*/
 
 const AgentDashboard = () => {
   return (
-    <div className="min-h-screen bg-slate-50 p-6 space-y-6">
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px", padding: "24px", fontFamily: "'Inter', sans-serif" }}>
 
-      {/* Header */}
-      <div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-100">
-        <h1 className="text-2xl font-semibold text-slate-800">
-          Welcome Back 👋
-        </h1>
-        <p className="text-slate-500 mt-1">
-          You have 8 active tickets waiting for your action.
-        </p>
+      {/* Greeting */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#fff", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "18px 22px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "linear-gradient(135deg,#6366F1,#8B5CF6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: 700, color: "#fff" }}>JD</div>
+          <div>
+            <p style={{ fontSize: "15px", fontWeight: 700, color: "#0F172A", margin: 0 }}>Good morning, Jordan</p>
+            <p style={{ fontSize: "12px", color: "#94A3B8", margin: "2px 0 0" }}>8 active tickets waiting for your action</p>
+          </div>
+        </div>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "#ECFDF5", color: "#065F46", fontSize: "12px", fontWeight: 600, padding: "5px 12px", borderRadius: "20px" }}>
+          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#10B981" }} />
+          Online
+        </span>
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {stats.map((item) => {
-          const Icon = item.icon;
-
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "14px" }}>
+        {STATS.map((s) => {
+          const Icon = s.icon;
           return (
-            <div
-              key={item.title}
-              className="rounded-2xl bg-white p-5 shadow-sm border border-slate-100 hover:shadow-md transition"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-slate-500">
-                    {item.title}
-                  </p>
-                  <h2 className="text-2xl font-semibold text-slate-800 mt-1">
-                    {item.value}
-                  </h2>
+            <div key={s.label} style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "18px 20px" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+                <div style={{ width: "38px", height: "38px", borderRadius: "11px", background: s.light, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon size={19} color={s.accent} />
                 </div>
-
-                <div className={`p-3 rounded-xl ${item.color}`}>
-                  <Icon size={22} />
-                </div>
+                <span style={{ fontSize: "11px", color: "#94A3B8", background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: "20px", padding: "3px 8px" }}>{s.trend}</span>
               </div>
+              <p style={{ fontSize: "28px", fontWeight: 700, color: "#0F172A", margin: 0, lineHeight: 1 }}>{s.value}</p>
+              <p style={{ fontSize: "12px", color: "#64748B", margin: "5px 0 0" }}>{s.label}</p>
             </div>
           );
         })}
       </div>
 
-      {/* Middle Section */}
-      <div className="grid gap-6 xl:grid-cols-3">
+      {/* Tickets + Activity */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: "14px" }}>
 
         {/* Tickets */}
-        <div className="xl:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-semibold text-slate-800">
-              Assigned Tickets
-            </h2>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              View All
+        <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "20px 22px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+            <h2 style={{ fontSize: "14px", fontWeight: 700, color: "#0F172A", margin: 0 }}>Assigned tickets</h2>
+            <button style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", color: "#6366F1", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+              View all <ArrowRight size={12} />
             </button>
           </div>
-
-          <div className="space-y-3">
-            {tickets.map((ticket) => (
-              <div
-                key={ticket.id}
-                className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition"
-              >
-                <div>
-                  <h3 className="font-medium text-slate-800">
-                    {ticket.title}
-                  </h3>
-                  <p className="text-sm text-slate-500">
-                    {ticket.id}
-                  </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {TICKETS.map((t) => {
+              const ss = STATUS_STYLE[t.status];
+              const ps = PRIORITY_BAR[t.priority];
+              return (
+                <div key={t.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 14px", borderRadius: "12px", background: "#FAFAFA", border: "1px solid #F1F5F9" }}>
+                  <div style={{ width: "3px", height: "36px", borderRadius: "99px", background: ps.bar, flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: "13px", fontWeight: 600, color: "#1E293B", margin: 0 }}>{t.title}</p>
+                    <p style={{ fontSize: "11px", color: "#94A3B8", margin: "3px 0 0", fontFamily: "monospace" }}>{t.id}</p>
+                  </div>
+                  <div style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
+                    <span style={{ fontSize: "11px", fontWeight: 600, padding: "3px 10px", borderRadius: "20px", background: ss.bg, color: ss.text }}>{t.status}</span>
+                    <span style={{ fontSize: "11px", fontWeight: 600, padding: "3px 10px", borderRadius: "20px", background: ps.bg, color: ps.text }}>{t.priority}</span>
+                  </div>
                 </div>
+              );
+            })}
+          </div>
+        </div>
 
-                <div className="flex gap-2">
-                  <span
-                    className={`text-xs px-3 py-1 rounded-full ${statusColor[ticket.status]}`}
-                  >
-                    {ticket.status}
-                  </span>
-
-                  <span
-                    className={`text-xs px-3 py-1 rounded-full ${priorityColor[ticket.priority]}`}
-                  >
-                    {ticket.priority}
-                  </span>
+        {/* Activity */}
+        <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "20px 22px" }}>
+          <h2 style={{ fontSize: "14px", fontWeight: 700, color: "#0F172A", margin: "0 0 16px" }}>Recent activity</h2>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {ACTIVITY.map((a, i) => (
+              <div key={i} style={{ display: "flex", gap: "12px", paddingBottom: i < ACTIVITY.length - 1 ? "16px" : 0, marginBottom: i < ACTIVITY.length - 1 ? "16px" : 0, borderBottom: i < ACTIVITY.length - 1 ? "1px solid #F1F5F9" : "none" }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <span style={{ width: "9px", height: "9px", borderRadius: "50%", background: a.color, flexShrink: 0, marginTop: "3px" }} />
+                  {i < ACTIVITY.length - 1 && <div style={{ width: "1px", flex: 1, background: "#F1F5F9", marginTop: "4px" }} />}
+                </div>
+                <div>
+                  <p style={{ fontSize: "13px", fontWeight: 600, color: "#1E293B", margin: 0 }}>{a.title}</p>
+                  <p style={{ fontSize: "12px", color: "#64748B", margin: "2px 0 0" }}>{a.sub}</p>
+                  <p style={{ fontSize: "11px", color: "#94A3B8", margin: "4px 0 0" }}>{a.time}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
-
-        {/* Activity */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-          <h2 className="text-lg font-semibold text-slate-800 mb-5">
-            Recent Activity
-          </h2>
-
-          <div className="space-y-5">
-            <div className="flex gap-3">
-              <span className="h-2.5 w-2.5 mt-2 rounded-full bg-green-500" />
-              <div>
-                <p className="text-sm font-medium text-slate-800">
-                  Ticket Resolved
-                </p>
-                <p className="text-xs text-slate-500">
-                  Login issue fixed
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <span className="h-2.5 w-2.5 mt-2 rounded-full bg-yellow-500" />
-              <div>
-                <p className="text-sm font-medium text-slate-800">
-                  Status Updated
-                </p>
-                <p className="text-xs text-slate-500">
-                  Dashboard Bug → In Progress
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <span className="h-2.5 w-2.5 mt-2 rounded-full bg-blue-500" />
-              <div>
-                <p className="text-sm font-medium text-slate-800">
-                  New Ticket Assigned
-                </p>
-                <p className="text-xs text-slate-500">
-                  File Upload Error
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Progress */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-        <div className="flex justify-between text-sm mb-2">
-          <span className="text-slate-600">Resolution Progress</span>
-          <span className="text-slate-800 font-medium">75%</span>
+      <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "20px 22px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px" }}>
+          <div>
+            <h2 style={{ fontSize: "14px", fontWeight: 700, color: "#0F172A", margin: 0 }}>Resolution progress</h2>
+            <p style={{ fontSize: "12px", color: "#94A3B8", margin: "3px 0 0" }}>14 of 24 tickets resolved this week</p>
+          </div>
+          <span style={{ fontSize: "24px", fontWeight: 700, color: "#6366F1" }}>75%</span>
         </div>
-
-        <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-          <div className="h-full w-[75%] bg-blue-500 rounded-full transition-all duration-700" />
+        <div style={{ height: "8px", background: "#F1F5F9", borderRadius: "99px", overflow: "hidden" }}>
+          <div style={{ height: "100%", width: "75%", background: "linear-gradient(90deg,#6366F1,#8B5CF6)", borderRadius: "99px" }} />
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px" }}>
+          <span style={{ fontSize: "11px", color: "#94A3B8" }}>14 resolved</span>
+          <span style={{ fontSize: "11px", color: "#94A3B8" }}>10 remaining</span>
         </div>
       </div>
 

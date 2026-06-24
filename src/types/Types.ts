@@ -29,3 +29,25 @@ export interface CustomerStats {
   openTickets: number;
   resolvedTickets: number;
 }
+
+export interface CreateTicketPayload {
+  title: string;
+  description: string;
+  priority: string;
+}
+
+export interface Ticket {
+  id: number;
+  title: string;
+  description: string;
+  priority: string;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateTicketResponse {
+  success: boolean;
+  message: string;
+  ticket: Ticket;
+}

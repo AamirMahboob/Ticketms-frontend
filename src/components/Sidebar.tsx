@@ -25,6 +25,7 @@ interface NavItem {
   badge?: number;
 }
 
+
 const mainNav: NavItem[] = [
   {
     to: "/dashboard/admin",
@@ -79,6 +80,37 @@ const mainNav: NavItem[] = [
     ),
   },
 ];
+const roleMenus = {
+  admin: [
+    mainNav[0], // Dashboard
+    mainNav[1], // All Tickets
+    mainNav[2], // Users
+    mainNav[3], // Create User
+    mainNav[4], // Assign Tickets
+  ],
+
+  agent: [
+    {
+      to: "/dashboard/agent",
+      label: "Dashboard",
+      icon: mainNav[0].icon,
+    },
+    mainNav[3],
+  ],
+
+  customer: [
+    {
+      to: "/dashboard/customer",
+      label: "Dashboard",
+      icon: mainNav[0].icon,
+    },
+    mainNav[4],
+  ],
+};
+const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+const menus =
+  roleMenus[user.role as keyof typeof roleMenus] || [];
 
 const settingsNav: NavItem[] = [
   {
@@ -139,7 +171,7 @@ export default function Sidebar() {
         {/* Main nav */}
         <div className="tms-nav-section">
           <div className="tms-nav-label">Main</div>
-          {mainNav.map((item) => (
+          {menus?.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}

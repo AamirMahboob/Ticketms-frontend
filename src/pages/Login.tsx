@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../services/auth";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -21,7 +22,7 @@ interface AuthResponse {
 // ─── API ──────────────────────────────────────────────────────────────────────
 
 async function loginRequest(
-  credentials: LoginFormState
+  credentials: LoginFormState,
 ): Promise<AuthResponse> {
   const res = await fetch("/auth/login", {
     method: "POST",
@@ -61,19 +62,19 @@ export default function Login() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
     setLoading(true);
     setError("");
 
     try {
-      const { token, user } = await loginRequest(form);
+      const { token, user } = await loginUser(form);
 
-      // Persist auth state
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate(ROLE_REDIRECT[user.role], { replace: true });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      navigate(ROLE_REDIRECT[user.role]);
+    } catch (error: any) {
+      setError(error?.response?.data?.message || "Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -153,7 +154,13 @@ export default function Login() {
                 fill="none"
                 aria-hidden="true"
               >
-                <circle cx="7" cy="7" r="6" stroke="#ef4444" strokeWidth="1.5" />
+                <circle
+                  cx="7"
+                  cy="7"
+                  r="6"
+                  stroke="#ef4444"
+                  strokeWidth="1.5"
+                />
                 <path
                   d="M7 4v3M7 9.5v.5"
                   stroke="#ef4444"
