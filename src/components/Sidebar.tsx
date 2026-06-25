@@ -1,21 +1,3 @@
-// import { NavLink } from "react-router-dom";
-
-// export default function Sidebar() {
-//   return (
-//     <aside className="sidebar">
-//       <div className="logo">
-//         <h2>TMS</h2>
-//       </div>
-
-//       <nav>
-//         <NavLink to="/dashboard/admin">Dashboard</NavLink>
-//         <NavLink to="/users">Users</NavLink>
-//         <NavLink to="/tickets">Tickets</NavLink>
-//       </nav>
-//     </aside>
-//   );
-// }
-
 import { NavLink, useNavigate } from "react-router-dom";
 
 interface NavItem {
@@ -69,24 +51,24 @@ const mainNav: NavItem[] = [
       </svg>
     ),
   },
-   {
-    to: "/dashboard/tickets/customer",
-    label: "Create Tickets",
-    icon: (
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
-        <line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
-      </svg>
-    ),
-  },
+  //  {
+  //   to: "/dashboard/tickets/customer",
+  //   label: "Create Tickets",
+  //   icon: (
+  //     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  //       <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+  //       <line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
+  //     </svg>
+  //   ),
+  // },
 ];
-const roleMenus = {
+const roleMenus: Record<string, NavItem[]>  = {
   admin: [
     mainNav[0], // Dashboard
     mainNav[1], // All Tickets
     mainNav[2], // Users
     mainNav[3], // Create User
-    mainNav[4], // Assign Tickets
+    // mainNav[4], // Assign Tickets
   ],
 
   agent: [
@@ -98,14 +80,13 @@ const roleMenus = {
     mainNav[3],
   ],
 
-  customer: [
-    {
-      to: "/dashboard/customer",
-      label: "Dashboard",
-      icon: mainNav[0].icon,
-    },
-    mainNav[4],
-  ],
+ customer: [
+  {
+    to: "/dashboard/customer",
+    label: "Dashboard",
+    icon: mainNav[0].icon,
+  },
+],
 };
 const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -148,7 +129,7 @@ export default function Sidebar() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    navigate("/login");
+    navigate("/");
   };
 
   return (
