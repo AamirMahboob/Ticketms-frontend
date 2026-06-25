@@ -78,14 +78,14 @@ export default function AppRoutes() {
             }
           />
 
-          <Route
+          {/* <Route
             path="tickets/customer"
             element={
               <ProtectedRoute allowedRoles={["customer"]}>
                 <CustomerTicket />
               </ProtectedRoute>
             }
-          />
+          /> */}
         </Route>
       </Routes>
     </BrowserRouter>
