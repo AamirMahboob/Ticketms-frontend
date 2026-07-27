@@ -2,7 +2,7 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL:
-    "https://ticket-management-system-production-9cf3.up.railway.app/api",
+    "http://localhost:5001/api",
   headers: {
     "Content-Type": "application/json",
   },
