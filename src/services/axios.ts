@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL:
-    "http://localhost:5001/api",
+  baseURL: "https://ticket-management-system-three-eta.vercel.app/api",
   headers: {
     "Content-Type": "application/json",
   },
